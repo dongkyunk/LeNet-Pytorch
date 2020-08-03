@@ -6,3 +6,6 @@ LeNet-5 consists of two sets of convolutional and average pooling layers, follow
 
 
 <img src="https://blog.kakaocdn.net/dn/bwmQbA/btqB8PCH3IE/lCT2DAeSNV2rbVlIGBUCh0/img.png" width = "100%">
+
+# Reference
+https://engmrk.com/lenet-5-a-classic-cnn-architecture/
