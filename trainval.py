@@ -3,41 +3,78 @@ from __future__ import division
 from __future__ import print_function
 
 import time
-
-
 import torch
 import numpy as np
 
-def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=10):
-    model.train()
-    loss = 0
 
-    for i, (inp, target, meta) in enumerate(train_loader):
+class AverageMeter(object):
+    """Computes and stores the average and current value"""
+
+    def __init__(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+        self.reset()
+
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
+
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
+
+
+def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=10):
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+    losses = AverageMeter()
+
+    model.train()
+    end = time.time()
+
+    for i, (images, labels) in enumerate(train_loader):
+        # measure data time
+        data_time.update(time.time()-end)
+
+        images = images.cuda()
+        target = target.cuda()
 
         # compute the output
-        output = model(inp)
-        loss = critertion(output, target)
+        output = model(images)
+        loss = criterion(output, labels)
+
+        # record loss
+        losses.update(loss.item(), images.size(0))
 
         # optimize && backward pass
-        optimizer.zero_grad() # clear previous gradients
-        loss.backward() # compute gradients of all variables wrt loss
-        optimizer.step() # perform updates using calculated gradients
+        optimizer.zero_grad()  # clear previous gradients
+        loss.backward()  # compute gradients of all variables wrt loss
+        optimizer.step()  # perform updates using calculated gradients
 
-        losses.update(100.0*loss.item(), inp.size(0))
+        # measure elapsed time
+        batch_time.update(time.time() - end)
+        end = time.time()
 
         # Print logs
         if i % print_freq == 0:
             msg = 'Epoch: [{0}][{1}/{2}]\t' \
+                  'Time {batch_time.val:.3f}s ({batch_time.avg:.3f}s)\t' \
+                  'Speed {speed:.1f} samples/s\t' \
+                  'Data {data_time.val:.3f}s ({data_time.avg:.3f}s)\t' \
                   'Loss {loss.val:.5f} ({loss.avg:.5f})\t'.format(
-                      epoch, iter+i, len(train_loader), loss=losses)
+                      epoch, iter+i, len(train_loader), batch_time=batch_time,
+                      speed=image.size(0)/batch_time.val,
+                      data_time=data_time, loss=losses)
             print(msg)
 
-
-    msg = 'Train Epoch {}, loss:{:.4f} nme:{:.4f}'\
-        .format(epoch, losses.avg)
+    msg = 'Train Epoch {} time:{:.4f} loss:{:.4f} nme:{:.4f}'\
+        .format(epoch, batch_time.avg, losses.avg, nme)
     print(msg)
+
     return iter+i
-
-
-
-
