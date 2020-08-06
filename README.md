@@ -8,5 +8,24 @@ LeNet-5 consists of two sets of convolutional and average pooling layers, follow
 
 <img src="https://blog.kakaocdn.net/dn/bwmQbA/btqB8PCH3IE/lCT2DAeSNV2rbVlIGBUCh0/img.png" width = "100%">
 
+# How To Use
+Clone the repo
+```
+git clone https://github.com/dongkyuk/LeNet
+```
+Go to the repo directory
+```
+cd LeNet/
+```
+Install requirements
+```
+pip install -r requirements.txt
+```
+Start Training 
+```
+python train.py --optim adam --epoch 50
+```
+You can change the optimizer, epoch size, etc using the parse options. Take a look at options.py in the utils folder.
+
 # Reference
 https://engmrk.com/lenet-5-a-classic-cnn-architecture/
