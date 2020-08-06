@@ -6,29 +6,28 @@ import os
 import torch
 import torch.optim as optim
 from adamp import AdamP
-from collections import Iterable
 
-def get_optimizer(opt, model, lr=0.01, momentum=0.9, wd=5e-4, nesterov=False):
+
+def get_optimizer(opt, model, momentum=0.9, wd=5e-4, nesterov=False):
     optimizer = None
-    if opt == 'sgd':
+    if opt.optim == 'sgd':
         optimizer = optim.SGD(
             filter(lambda p: p.requires_grad, model.parameters()),
-            lr=lr,
+            lr=opt.lr,
             momentum=momentum,
             weight_decay=wd,
             nesterov=nesterov
         )
-    elif opt == 'adam':
+    elif opt.optim == 'adam':
         optimizer = optim.Adam(
             filter(lambda p: p.requires_grad, model.parameters()),
-            lr=lr
+            lr=opt.lrlr
         )
-    elif opt== 'adamp':
-        optimizer = AdamP(filter(lambda p: p.requires_grad, model.parameters()), lr=lr,betas=(0.9, 0.999), weight_decay=1e-2)
-
+    elif opt.optim == 'adamp':
+        optimizer = AdamP(filter(lambda p: p.requires_grad, model.parameters(
+        )), lr=opt.lr, betas=(0.9, 0.999), weight_decay=1e-2)
 
     return optimizer
-
 
 
 def save_checkpoint(state, is_best, file_path, file_name='checkpoint.pth'):

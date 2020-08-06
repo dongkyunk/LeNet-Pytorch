@@ -1,46 +1,42 @@
-from model.LeNet import LeNet5
 import numpy as np
 import torch
 import torch.nn as nn
+import os
+import torchvision.transforms as transforms
+from opt import parse_option
+
 from torchvision.datasets import mnist
 from torch.nn import CrossEntropyLoss
 from torch.optim import SGD
 from torch.utils.data import DataLoader
-from torchvision.transforms import ToTensor
 from trainval import train
 from evaluate import validate
-from utils import save_checkpoint
-import os
+from utils import save_checkpoint, get_optimizer
+from model.LeNet import LeNet5
 
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-RANDOM_SEED = 42
-LEARNING_RATE = 0.001
-BATCH_SIZE = 32
-N_EPOCHS = 15
-
-IMG_SIZE = 32
-SAVE_DIR = 'weights'
-
+opt = parse_option()
 
 if __name__ == '__main__':
     # download and create datasets
     train_dataset = mnist.MNIST(
-        root='./train', train=True, transform=ToTensor())
-    val_dataset = mnist.MNIST(root='./test', train=False, transform=ToTensor())
+        root='./train', download=True, train=True, transform=transforms.Compose([
+            transforms.Resize((32, 32)), transforms.ToTensor()]))
+    val_dataset = mnist.MNIST(root='./test', download=True, train=False, transform=transforms.Compose([
+        transforms.Resize((32, 32)), transforms.ToTensor()]))
+
     # define the data loaders
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE)
-    val_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
+    train_loader = DataLoader(train_dataset, opt.batch_size)
+    val_loader = DataLoader(val_dataset, opt.batch_size)
 
     model = LeNet5()
-    sgd = SGD(model.parameters(), lr=1e-1)
-    cross_error = CrossEntropyLoss()
-    max_epoch = 100
-    optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    print(model)
+
+    optimizer = get_optimizer(opt, model)
     criterion = nn.CrossEntropyLoss()
     best_accuracy = 0
+    iter = 0
 
-    for epoch in range(epoch):
+    for epoch in range(opt.epoch):
         # train for one epoch
         iter = train(train_loader, model, criterion,
                      optimizer, epoch, iter=iter)
@@ -58,11 +54,11 @@ if __name__ == '__main__':
              "epoch": epoch + 1,
              "accuracy": accuracy,
              "optimizer": optimizer.state_dict(),
-             }, is_best, SAVE_DIR, 'checkpoint.pth')
+             }, is_best, opt.SAVE_DIR, 'checkpoint.pth')
 
-        print('accuracy: {:.2f}'.format(accuracy))
+        print('accuracy: {:.4f}%'.format(100 * accuracy))
 
-    final_model_state_file = os.path.join(SAVE_DIR, 'final_state.pth')
+    final_model_state_file = os.path.join(opt.SAVE_DIR, 'final_state.pth')
 
     print('saving final model state to {}'.format(final_model_state_file))
     torch.save(model.state_dict(), final_model_state_file)

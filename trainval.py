@@ -6,6 +6,7 @@ import time
 import torch
 import numpy as np
 
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 class AverageMeter(object):
     """Computes and stores the average and current value"""
@@ -30,20 +31,21 @@ class AverageMeter(object):
         self.avg = self.sum / self.count
 
 
-def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=10):
+def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=500):
     batch_time = AverageMeter()
     data_time = AverageMeter()
     losses = AverageMeter()
-
+    if DEVICE == 'cuda':
+        model.cuda()
     model.train()
     end = time.time()
 
     for i, (images, labels) in enumerate(train_loader):
         # measure data time
         data_time.update(time.time()-end)
-
-        images = images.cuda()
-        target = target.cuda()
+        if DEVICE == 'cuda':
+            images = images.cuda()
+            labels = labels.cuda()
 
         # compute the output
         output = model(images)
@@ -60,7 +62,8 @@ def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=1
         # measure elapsed time
         batch_time.update(time.time() - end)
         end = time.time()
-
+        # print(iter)
+        # print(i)
         # Print logs
         if i % print_freq == 0:
             msg = 'Epoch: [{0}][{1}/{2}]\t' \

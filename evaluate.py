@@ -15,9 +15,11 @@ def validate(val_loader, model, criterion, epoch):
     data_time = AverageMeter()
     losses = AverageMeter()
     accuracy = 0.0
-    model.cuda()
+    if DEVICE == 'cuda':
+        model.cuda()
     model.eval()
-
+    end = time.time()
+    n = 0
     with torch.no_grad():
         for i, (image, labels) in enumerate(val_loader):
             # measure data time
@@ -35,21 +37,26 @@ def validate(val_loader, model, criterion, epoch):
             # record loss (average is updated)
             losses.update(loss.item(), image.size(0))
 
-            # convert 'output' tensor to numpy array and use 'numpy.argmax()' function    
-            output = output.cpu().data.numpy()    # convert cuda() type to cpu(), then convert it to numpy
-            output = np.argmax(output, axis = 1)  # retrieved max_values along every row    
+            # convert 'output' tensor to numpy array and use 'numpy.argmax()' function
+            # convert cuda() type to cpu(), then convert it to numpy
+            if DEVICE == 'cuda':
+                output = output.cpu().data.numpy()
+            else:
+                output = output.data.numpy()
+            # retrieved max_values along every row
+            output = np.argmax(output, axis=1)
+            labels = labels.cpu().data.numpy()
+            n += labels.size
+            # measure accuracy
+            accuracy += np.sum(output == labels)
 
-            # measure accuracy        
-            accuracy += (output == labels).sum()
-            accuracy = accuracy / labels.size()
- 
             # measure elapsed time
             batch_time.update(time.time() - end)
             end = time.time()
 
+    accuracy = accuracy / n
     msg = 'Test Epoch {} time:{:.4f} loss:{:.4f} accuracy:{:.4f}'\
-        .format(epoch, batch_time.avg, 100.0*losses.avg, 100.0*accuracy)
+        .format(epoch, batch_time.avg, losses.avg, 100.0*accuracy)
     print(msg)
 
     return losses.avg, accuracy
-

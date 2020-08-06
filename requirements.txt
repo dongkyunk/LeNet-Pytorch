@@ -1,0 +1,3 @@
+adamp
+#torch == 1.5.0
+#NumPy == 1.14.2
