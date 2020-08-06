@@ -1,46 +1,52 @@
-from model import LeNet5
-import numpy as np
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
+import os
 import torch
-from torchvision.datasets import mnist
-from torch.nn import CrossEntropyLoss
-from torch.optim import SGD
-from torch.utils.data import DataLoader
-from torchvision.transforms import ToTensor
+import torch.optim as optim
+from adamp import AdamP
+from collections import Iterable
 
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+def get_optimizer(opt, model, lr=0.01, momentum=0.9, wd=5e-4, nesterov=False):
+    optimizer = None
+    if opt == 'sgd':
+        optimizer = optim.SGD(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=lr,
+            momentum=momentum,
+            weight_decay=wd,
+            nesterov=nesterov
+        )
+    elif opt == 'adam':
+        optimizer = optim.Adam(
+            filter(lambda p: p.requires_grad, model.parameters()),
+            lr=lr
+        )
+    elif opt== 'adamp':
+        optimizer = AdamP(filter(lambda p: p.requires_grad, model.parameters()), lr=lr,betas=(0.9, 0.999), weight_decay=1e-2)
 
-if __name__ == '__main__':
-    batch_size = 256
-    train_dataset = mnist.MNIST(root='./train', train=True, transform=ToTensor())
-    test_dataset = mnist.MNIST(root='./test', train=False, transform=ToTensor())
-    train_loader = DataLoader(train_dataset, batch_size=batch_size)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size)
-    model = Model()
-    sgd = SGD(model.parameters(), lr=1e-1)
-    cross_error = CrossEntropyLoss()
-    epoch = 100
 
-    for _epoch in range(epoch):
-        for idx, (train_x, train_label) in enumerate(train_loader):
-            label_np = np.zeros((train_label.shape[0], 10))
-            sgd.zero_grad()
-            predict_y = model(train_x.float())
-            _error = cross_error(predict_y, train_label.long())
-            if idx % 10 == 0:
-                print('idx: {}, _error: {}'.format(idx, _error))
-            _error.backward()
-            sgd.step()
+    return optimizer
 
-        correct = 0
-        _sum = 0
 
-        for idx, (test_x, test_label) in enumerate(test_loader):
-            predict_y = model(test_x.float()).detach()
-            predict_ys = np.argmax(predict_y, axis=-1)
-            label_np = test_label.numpy()
-            _ = predict_ys == test_label
-            correct += np.sum(_.numpy(), axis=-1)
-            _sum += _.shape[0]
 
-        print('accuracy: {:.2f}'.format(correct / _sum))
-        torch.save(model, 'models/mnist_{:.2f}.pkl'.format(correct / _sum))
+def save_checkpoint(state, is_best, file_path, file_name='checkpoint.pth'):
+    """Saves model and training parameters at checkpoint + 'last.pth.tar'. If is_best==True, also saves
+    checkpoint + 'best.pth.tar'
+    Args:
+        state: (dict) contains model's state_dict, may contain other keys such as epoch, optimizer state_dict
+        is_best: (bool) True if it is the best model seen till now
+        checkpoint: (string) folder where parameters are to be saved
+    """
+    savepath = os.path.join(file_path, file_name)
+    if not os.path.exists(file_path):
+        print("Save Directory does not exist! Making directory {}".format(file_path))
+        os.mkdir(file_path)
+    else:
+        print("Save Directory exists! ")
+    torch.save(state, savepath)
+    # Save best accuracy model weights in the model directory
+    if is_best:
+        savepath = os.path.join(file_path, 'best.pth')
+        torch.save(state, savepath)

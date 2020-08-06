@@ -3,12 +3,6 @@ import torch.nn as nn
 from collections import OrderedDict
 
 #parameters
-RANDOM_SEED = 42
-LEARNING_RATE = 0.001
-BATCH_SIZE = 32
-N_EPOCHS = 15
-
-IMG_SIZE = 32
 n_classes = 10
 
 class LeNet5(nn.Module):

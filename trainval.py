@@ -69,12 +69,12 @@ def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=1
                   'Data {data_time.val:.3f}s ({data_time.avg:.3f}s)\t' \
                   'Loss {loss.val:.5f} ({loss.avg:.5f})\t'.format(
                       epoch, iter+i, len(train_loader), batch_time=batch_time,
-                      speed=image.size(0)/batch_time.val,
+                      speed=images.size(0)/batch_time.val,
                       data_time=data_time, loss=losses)
             print(msg)
 
-    msg = 'Train Epoch {} time:{:.4f} loss:{:.4f} nme:{:.4f}'\
-        .format(epoch, batch_time.avg, losses.avg, nme)
+    msg = 'Train Epoch {} time:{:.4f} loss:{:.4f}'\
+        .format(epoch, batch_time.avg, losses.avg)
     print(msg)
 
     return iter+i
