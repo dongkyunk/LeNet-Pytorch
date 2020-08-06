@@ -11,7 +11,7 @@ from torch.optim import SGD
 from torch.utils.data import DataLoader
 from trainval import train
 from evaluate import validate
-from utils import save_checkpoint, get_optimizer
+from utils.utils import save_checkpoint, get_optimizer
 from model.LeNet import LeNet5
 
 opt = parse_option()
