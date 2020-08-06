@@ -62,3 +62,4 @@ if __name__ == '__main__':
 
     print('saving final model state to {}'.format(final_model_state_file))
     torch.save(model.state_dict(), final_model_state_file)
+    print('Done!')
