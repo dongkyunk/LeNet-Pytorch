@@ -9,7 +9,7 @@ LeNet-5 consists of two sets of convolutional and average pooling layers, follow
 <img src="https://blog.kakaocdn.net/dn/bwmQbA/btqB8PCH3IE/lCT2DAeSNV2rbVlIGBUCh0/img.png" width = "100%">
 
 ## How To Use
-Clone the repo
+Clone this repo
 ```
 git clone https://github.com/dongkyuk/LeNet
 ```
