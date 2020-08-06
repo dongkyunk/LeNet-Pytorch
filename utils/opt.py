@@ -22,7 +22,7 @@ def parse_option():
     p.add_argument('--test_dataset', default='', type=str)
 
     # Input image
-    p.add_argument('--img_size', default=256, type=int)
+    p.add_argument('--img_size', default=32, type=int)
 
     # Optimizer
     p.add_argument('--optim', default='sgd', type=str,
