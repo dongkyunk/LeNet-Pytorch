@@ -30,3 +30,6 @@ Please note that it doesn't support loss function choosing options yet.
 
 ## Reference
 https://engmrk.com/lenet-5-a-classic-cnn-architecture/
+
+## To Do
+Add Tensorboard feature
