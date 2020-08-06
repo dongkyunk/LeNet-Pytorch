@@ -21,7 +21,7 @@ def get_optimizer(opt, model, momentum=0.9, wd=5e-4, nesterov=False):
     elif opt.optim == 'adam':
         optimizer = optim.Adam(
             filter(lambda p: p.requires_grad, model.parameters()),
-            lr=opt.lrlr
+            lr=opt.lr
         )
     elif opt.optim == 'adamp':
         optimizer = AdamP(filter(lambda p: p.requires_grad, model.parameters(
