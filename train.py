@@ -4,6 +4,7 @@ import torch.nn as nn
 import os
 import torchvision.transforms as transforms
 from utils.opt import parse_option
+from livelossplot import PlotLosses
 
 from torchvision.datasets import mnist
 from torch.nn import CrossEntropyLoss
@@ -18,6 +19,7 @@ opt = parse_option()
 
 if __name__ == '__main__':
     # download and create datasets
+    liveloss = PlotLosses()
     train_dataset = mnist.MNIST(
         root='./train', download=True, train=True, transform=transforms.Compose([
             transforms.Resize((32, 32)), transforms.ToTensor()]))
@@ -35,14 +37,21 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     best_accuracy = 0
     iter = 0
+    
 
     for epoch in range(opt.epoch):
+        logs = {}
+        prefix = ''
         # train for one epoch
-        iter = train(train_loader, model, criterion,
+        iter, loss = train(train_loader, model, criterion,
                      optimizer, epoch, iter=iter)
+        logs[prefix + 'log loss'] = loss.item()
         # evaluate
         loss, accuracy = validate(
             val_loader, model, criterion, epoch)
+        prefix = 'val_'
+        logs[prefix + 'log loss'] = loss.item()
+        logs[prefix + 'accuracy'] = accuracy.item()
 
         is_best = accuracy < best_accuracy
         best_accuracy = min(accuracy, best_accuracy)
@@ -57,9 +66,16 @@ if __name__ == '__main__':
              }, is_best, opt.SAVE_DIR, 'checkpoint.pth')
 
         print('accuracy: {:.2f}%'.format(100 * accuracy))
-
+        liveloss.update(logs)
+        liveloss.send()
+                        
     final_model_state_file = os.path.join(opt.SAVE_DIR, 'final_state.pth')
 
     print('saving final model state to {}'.format(final_model_state_file))
     torch.save(model.state_dict(), final_model_state_file)
     print('Done!')
+
+            
+
+        
+   

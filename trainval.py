@@ -80,4 +80,4 @@ def train(train_loader, model, criterion, optimizer, epoch, iter=0, print_freq=5
         .format(epoch, batch_time.avg, losses.avg)
     print(msg)
 
-    return iter+i
+    return iter+i, losses.avg
