@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import os
 import torchvision.transforms as transforms
-from opt import parse_option
+from utils.opt import parse_option
 
 from torchvision.datasets import mnist
 from torch.nn import CrossEntropyLoss
