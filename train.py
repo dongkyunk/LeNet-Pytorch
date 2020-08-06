@@ -56,7 +56,7 @@ if __name__ == '__main__':
              "optimizer": optimizer.state_dict(),
              }, is_best, opt.SAVE_DIR, 'checkpoint.pth')
 
-        print('accuracy: {:.4f}%'.format(100 * accuracy))
+        print('accuracy: {:.2f}%'.format(100 * accuracy))
 
     final_model_state_file = os.path.join(opt.SAVE_DIR, 'final_state.pth')
 
