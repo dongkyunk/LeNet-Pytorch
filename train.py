@@ -4,7 +4,6 @@ import torch.nn as nn
 import os
 import torchvision.transforms as transforms
 from utils.opt import parse_option
-from livelossplot import PlotLosses
 
 from torchvision.datasets import mnist
 from torch.nn import CrossEntropyLoss
