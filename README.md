@@ -28,6 +28,9 @@ python train.py --optim adam --epoch 50
 You can change the optimizer, epoch size, etc using the parse options. Take a look at opt.py in the utils folder.
 Please note that it doesn't support loss function choosing options yet.
 
+## Model Image
+
+
 ## Reference
 https://engmrk.com/lenet-5-a-classic-cnn-architecture/
 
