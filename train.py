@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
     model = LeNet5()
     print(model)
+    dummy_input = torch.randn(1, 1, 32, 32)
+    torch.onnx.export(model, dummy_input, 'lenet.onnx',)
 
     optimizer = get_optimizer(opt, model)
     criterion = nn.CrossEntropyLoss()
@@ -63,6 +65,7 @@ if __name__ == '__main__':
 
     print('saving final model state to {}'.format(final_model_state_file))
     torch.save(model.state_dict(), final_model_state_file)
+
     print('Done!')
 
             
