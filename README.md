@@ -1,6 +1,8 @@
 # Pytorch implementation of [**LeNet**](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)
 This is the first paper I am review/implementing for my project: "Ten Papers && Ten Implementations"
 
+Here is the link to the medium post that explains the repo in more detail:
+Paper Review : https://medium.com/@tomaskdk2000/gradient-based-learning-applied-to-document-recognition-review-f73386b35491
 
 ## Overview 
 LeNet-5 consists of two sets of convolutional and average pooling layers, followed by a flattening convolutional layer, then two fully-connected layers and finally a Gaussian classifier.
