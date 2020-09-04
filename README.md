@@ -33,7 +33,7 @@ Please note that it doesn't support loss function choosing options yet.
 
 ## Netron Model Image
 
-![Model](https://github.com/dongkyuk/LeNet-Pytorch/blob/master/lenet.png)
+![Model](https://github.com/dongkyuk/LeNet-Pytorch/blob/master/others/lenet.png)
 
 ## Reference
 
