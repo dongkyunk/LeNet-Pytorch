@@ -12,26 +12,24 @@ from torch.utils.data import DataLoader
 from trainval import train
 from evaluate import validate
 from utils.utils import save_checkpoint, get_optimizer
-from model.LeNet import LeNet5
+from model.lenet import LeNet5
 
 opt = parse_option()
 
 if __name__ == '__main__':
-    # download and create datasets
+    # Download and create datasets
     train_dataset = mnist.MNIST(
         root='./train', download=True, train=True, transform=transforms.Compose([
             transforms.Resize((32, 32)), transforms.ToTensor()]))
     val_dataset = mnist.MNIST(root='./test', download=True, train=False, transform=transforms.Compose([
         transforms.Resize((32, 32)), transforms.ToTensor()]))
 
-    # define the data loaders
+    # Define the data loaders
     train_loader = DataLoader(train_dataset, opt.batch_size)
     val_loader = DataLoader(val_dataset, opt.batch_size)
 
     model = LeNet5()
     print(model)
-    dummy_input = torch.randn(1, 1, 32, 32)
-    torch.onnx.export(model, dummy_input, 'lenet.onnx',)
 
     optimizer = get_optimizer(opt, model)
     criterion = nn.CrossEntropyLoss()

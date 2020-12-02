@@ -1,7 +1,3 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 import os
 import torch
 import torch.optim as optim
@@ -31,13 +27,15 @@ def get_optimizer(opt, model, momentum=0.9, wd=5e-4, nesterov=False):
 
 
 def save_checkpoint(state, is_best, file_path, file_name='checkpoint.pth'):
-    """Saves model and training parameters at checkpoint + 'last.pth.tar'. If is_best==True, also saves
-    checkpoint + 'best.pth.tar'
+    '''
+    Saves model and training parameters at checkpoint + 'last.pth.tar'. 
+    If is_best, also saves checkpoint + 'best.pth.tar'
+
     Args:
         state: (dict) contains model's state_dict, may contain other keys such as epoch, optimizer state_dict
         is_best: (bool) True if it is the best model seen till now
         checkpoint: (string) folder where parameters are to be saved
-    """
+    '''
     savepath = os.path.join(file_path, file_name)
     if not os.path.exists(file_path):
         print("Save Directory does not exist! Making directory {}".format(file_path))
